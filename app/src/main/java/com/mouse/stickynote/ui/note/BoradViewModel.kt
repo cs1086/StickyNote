@@ -19,6 +19,7 @@ class BoardViewModel(
     var dragDownPosition =Position(0f,0f)
     init {
         GlobalScope.launch {
+            delay(1000)
             noteRepository.getAll().collect{
                 println("@@@@noteRepository.getAll=$it")
                 allNotes.emit(it)
