@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -26,6 +27,7 @@ import com.mouse.stickynote.ui.theme.StickyNoteTheme
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
+//todo 有位移的偏差bug
 class MainActivity : ComponentActivity() {
     val viewModel by viewModels<BoardViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,19 +55,35 @@ fun BoardView(boardViewModel: BoardViewModel) {
     val notes by boardViewModel.allNotes.collectAsState(initial = emptyList())
     Box(Modifier.fillMaxSize()) {
         notes.forEach { note ->
-            val onNotePositionChanged:(Position)->Unit={delta->
+            //移動時callback
+            val onNotePositionChanged: (Position) -> Unit = { delta ->
                 GlobalScope.launch {
                     boardViewModel.moveNote(note.id, delta)
                 }
             }
-            StickyNote(Modifier.align(Alignment.Center),onNotePositionChanged,note = note)
+            //點下去時callback
+            val onPositionDragDown: (Position) -> Unit = { delta ->
+                GlobalScope.launch {
+                    boardViewModel.dragDownPosition = delta
+                }
+            }
+            StickyNote(
+                Modifier.align(Alignment.Center),
+                onNotePositionChanged,
+                onPositionDragDown,
+                note = note
+            )
         }
     }
 }
 
 @Composable
-fun StickyNote(modifier: Modifier = Modifier, // [1]
-               onPositionChanged: (Position) -> Unit = {}, note: Note) {
+fun StickyNote(
+    modifier: Modifier = Modifier, // [1]
+    onPositionChanged: (Position) -> Unit = {},
+    onPositionDragDown: (Position) -> Unit = {},
+    note: Note
+) {
     Surface(
         elevation = 8.dp,
         color = Color(note.color.color),
@@ -78,13 +96,13 @@ fun StickyNote(modifier: Modifier = Modifier, // [1]
         Column(modifier = Modifier
             .padding(16.dp)
             .pointerInput(note.id) {
-                detectDragGestures { change, dragAmount ->
-                    change.consumeAllChanges()
-                    println("@@@@x=${dragAmount.x},y=${dragAmount.y}")
+                detectDragGestures() { change, dragAmount ->
+                     change.consumeAllChanges()
+                    println("@@@@consumeAllChanges.x=${dragAmount.x},y=${dragAmount.y}")
                     onPositionChanged(Position(dragAmount.x, dragAmount.y))
                 }
             }
-            ) {
+        ) {
             Text(note.text, style = MaterialTheme.typography.h5)
         }
     }

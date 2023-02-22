@@ -6,14 +6,14 @@ import kotlinx.coroutines.flow.flow
 import java.util.concurrent.ConcurrentHashMap
 
 interface NoteRepository {
-    val noteList:Flow<List<Note>>
+//    val noteList:Flow<List<Note>>
     fun getAll(): Flow<List<Note>>
     fun putNote(newNote:Note):Flow<List<Note>>
 }
 
 class InMemoryrNoteRepository : NoteRepository {
     private val noteMap = ConcurrentHashMap<String, Note>()
-    override val noteList:Flow<List<Note>> = getAll()
+//    override val noteList:Flow<List<Note>> = getAll()
     init {
         val initNote = Note.createRandomNote()
         noteMap[initNote.id] = initNote
@@ -25,7 +25,7 @@ class InMemoryrNoteRepository : NoteRepository {
     }
 
     override fun putNote(newNote: Note) : Flow<List<Note>> {
-        println("@@@@putNote=${newNote.position}")
+        //println("@@@@putNote=${newNote.position}")
         noteMap[newNote.id] = newNote
         return  flow { emit(noteMap.elements().toList())}
     }

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "236491931645",
+    "project_id": "sticknote-74dd5",
+    "storage_bucket": "sticknote-74dd5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:236491931645:android:e75488da0036025386e394",
+        "android_client_info": {
+          "package_name": "com.mouse.stickynote"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "236491931645-2d2d1bpujmosmkic9tgjfvhs5ev3v0g9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_UO8MXbchfOmFAIztF_pDRKm1CgJVQ84"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "236491931645-2d2d1bpujmosmkic9tgjfvhs5ev3v0g9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
