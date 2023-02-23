@@ -27,7 +27,7 @@ import com.mouse.stickynote.ui.theme.StickyNoteTheme
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-//todo 有位移的偏差bug
+//todo 有位移的偏差bug，因為flow的上傳與畫面刷新因為網路問題比較慢導致
 class MainActivity : ComponentActivity() {
     val viewModel by viewModels<BoardViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,16 +61,9 @@ fun BoardView(boardViewModel: BoardViewModel) {
                     boardViewModel.moveNote(note.id, delta)
                 }
             }
-            //點下去時callback
-            val onPositionDragDown: (Position) -> Unit = { delta ->
-                GlobalScope.launch {
-                    boardViewModel.dragDownPosition = delta
-                }
-            }
             StickyNote(
                 Modifier.align(Alignment.Center),
                 onNotePositionChanged,
-                onPositionDragDown,
                 note = note
             )
         }
@@ -97,8 +90,8 @@ fun StickyNote(
             .padding(16.dp)
             .pointerInput(note.id) {
                 detectDragGestures() { change, dragAmount ->
-                     change.consumeAllChanges()
-                    println("@@@@consumeAllChanges.x=${dragAmount.x},y=${dragAmount.y}")
+                    change.consumeAllChanges()
+//                    println("@@@@consumeAllChanges.x=${dragAmount.x},y=${dragAmount.y}")
                     onPositionChanged(Position(dragAmount.x, dragAmount.y))
                 }
             }

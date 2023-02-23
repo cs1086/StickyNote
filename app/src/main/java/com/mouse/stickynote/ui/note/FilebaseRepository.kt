@@ -6,37 +6,45 @@ import com.google.firebase.firestore.QuerySnapshot
 import com.mouse.stickynote.model.Note
 import com.mouse.stickynote.model.Position
 import com.mouse.stickynote.model.YBColor
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 
-class FilebaseRepository :NoteRepository {
+class FilebaseRepository : NoteRepository {
     private val firestore = FirebaseFirestore.getInstance()
     private val query = firestore.collection(COLLECTION_NOTES)
         .limit(100)
-    private var allNotes= emptyList<Note>()
+    private var allNotes = emptyList<Note>()
+
     init {
+
+    }
+
+    override fun getAll() = callbackFlow<List<Note>> {
         query.addSnapshotListener { result, e ->
-            println("@@@@取道db資料")
-            result?.let { onSnapshotUpdated(it) }
+
+            result?.let {
+
+                trySend(onSnapshotUpdated(it)).isSuccess
+            }
+
+        }
+        awaitClose {
+            // unregister
         }
     }
 
-    override fun getAll(): Flow<List<Note>> {
-        return flow { emit(allNotes)}
-    }
 
-    override fun putNote(note: Note): Flow<List<Note>> {
+    override fun putNote(note: Note) {
         setNoteDocument(note)
-        return getAll()
-
     }
 
-    private fun onSnapshotUpdated(snapshot: QuerySnapshot) {
-        allNotes = snapshot
-            .map { document -> documentToNotes(document) }.let{
+    private fun onSnapshotUpdated(snapshot: QuerySnapshot): List<Note> {
+        return snapshot
+            .map { document -> documentToNotes(document) }.let {
                 if (it.isEmpty()) listOf(Note.createRandomNote()) else it
             }
-        println("@@@@onSnapshotUpdated.allNotes=$allNotes")
     }
 
     private fun setNoteDocument(note: Note) {
@@ -57,7 +65,6 @@ class FilebaseRepository :NoteRepository {
 
         val text = data[FIELD_TEXT] as String
         val color = YBColor(data[FIELD_COLOR] as Long)
-        println("@@@@documentToNotes.data=${data[FIELD_POSITION_X]}")
         val positionX = (data[FIELD_POSITION_X]) as Double? ?: 0F
         val positionY = data[FIELD_POSITION_Y] as Double? ?: 0F
         val position = Position(positionX.toFloat(), positionY.toFloat())

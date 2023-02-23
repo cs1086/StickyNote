@@ -12,26 +12,27 @@ import kotlinx.coroutines.launch
 
 class BoardViewModel(
 
-): ViewModel() {
+) : ViewModel() {
 
-    private val noteRepository: NoteRepository=FilebaseRepository()
-    val allNotes:MutableStateFlow<List<Note>> = MutableStateFlow(arrayListOf())
-    var dragDownPosition =Position(0f,0f)
+    private val noteRepository: NoteRepository = FilebaseRepository()
+    val allNotes: MutableStateFlow<List<Note>> = MutableStateFlow(arrayListOf())
+
     init {
         GlobalScope.launch {
-            delay(1000)
-            noteRepository.getAll().collect{
+//            delay(1000)
+            noteRepository.getAll().buffer().conflate().collect {
                 println("@@@@noteRepository.getAll=$it")
                 allNotes.emit(it)
             }
         }
     }
-    suspend fun moveNote(noteId:String, delta:Position){
-        val note=allNotes.value.find { it.id== noteId}
+
+    suspend fun moveNote(noteId: String, delta: Position) {
+        val note = allNotes.value.find { it.id == noteId }
         if (note != null) {
-//            println("@@@@moveNote.position=${dragDownPosition+delta}")
-            noteRepository.putNote(note.copy(position = note.position+delta))
-            noteRepository.getAll().collect{
+            println("@@@@moveNote.position=${note.position + delta}")
+            noteRepository.putNote(note.copy(position = note.position + delta))
+            noteRepository.getAll().collect {
 //                println("@@@@moveNote.emit=${it.get(0).position}")
                 allNotes.emit(it)
             }
