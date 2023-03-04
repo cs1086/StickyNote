@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'com.google.gms.google-services'
+    id 'org.jetbrains.kotlin.android.extensions'//可以使用data class 的@Parcelize標籤
 }
 
 android {
@@ -38,7 +39,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.1.1'
+        kotlinCompilerExtensionVersion '1.2.0-rc02'
     }
     packagingOptions {
         resources {
@@ -48,6 +49,8 @@ android {
 }
 
 dependencies {
+    //gson
+    implementation 'com.google.code.gson:gson:2.10.1'
     //firebase
     implementation platform('com.google.firebase:firebase-bom:31.2.2')
     implementation 'com.google.firebase:firebase-analytics-ktx'
@@ -55,6 +58,12 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1")
     implementation "androidx.compose.runtime:runtime-livedata:$compose_ui_version"
+
+    //navigation compose
+    implementation("androidx.navigation:navigation-compose:2.4.0-alpha09")
+
+    //koin
+    implementation("io.insert-koin:koin-android:3.0.2")
 
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'

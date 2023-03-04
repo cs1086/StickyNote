@@ -7,25 +7,38 @@ import java.util.concurrent.ConcurrentHashMap
 
 interface NoteRepository {
     fun getAll(): Flow<List<Note>>
-    fun putNote(newNote:Note)
+    fun putNote(newNote: Note)
+    fun createNote(newNote: Note)
+    fun deleteNote(noteId: String)
+
 }
 
 class InMemoryrNoteRepository : NoteRepository {
     private val noteMap = ConcurrentHashMap<String, Note>()
-//    override val noteList:Flow<List<Note>> = getAll()
+
+    //    override val noteList:Flow<List<Note>> = getAll()
     init {
         val initNote = Note.createRandomNote()
         noteMap[initNote.id] = initNote
     }
 
-//    private val allNotes = listOf(Note.createRandomNote())
+    //    private val allNotes = listOf(Note.createRandomNote())
     override fun getAll(): Flow<List<Note>> {
-        return flow { emit(noteMap.elements().toList())}
+        return flow { emit(noteMap.elements().toList()) }
     }
 
     override fun putNote(newNote: Note) {
         //println("@@@@putNote=${newNote.position}")
         noteMap[newNote.id] = newNote
     }
+
+    override fun createNote(newNote: Note) {
+        TODO("Not yet implemented")
+    }
+
+    override fun deleteNote(noteId: String) {
+        TODO("Not yet implemented")
+    }
+
 
 }
