@@ -19,7 +19,7 @@ class EditorViewModel(val noteRepository: NoteRepository) : ViewModel() {
     init {
         GlobalScope.launch {
 //            delay(1000)
-            noteRepository.getAll().buffer().conflate().collect {
+            noteRepository.getAll().buffer().debounce(15).conflate().collectLatest {
                 println("@@@@ViewModel..getAll=$it")
                 allNotes.emit(it)
 //                it.find { note->note.isSelected }?.let { it1 -> selectingNote.emit(it1) }

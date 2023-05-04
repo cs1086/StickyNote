@@ -116,7 +116,7 @@ fun EditorScreen(viewModel: EditorViewModel, openEditTextScreen: (Note) -> Unit)
             val selectingNote = notes.find { it.isSelected }
             BoardView(notes, viewModel::moveNote, viewModel::tapNote)
             AnimatedVisibility(
-                visible = notes.firstOrNull { it.isSelected } != null, modifier = Modifier
+                visible = notes.firstOrNull { it.isSelected } == null, modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(10.dp)
             ) {
@@ -198,7 +198,7 @@ fun StickyNote(
             .pointerInput(note.id) {
                 detectDragGestures() { change, dragAmount ->
                     change.consumeAllChanges()
-//                    println("@@@@consumeAllChanges.x=${dragAmount.x},y=${dragAmount.y}")
+                    println("@@@@consumeAllChanges.x=${dragAmount.x},y=${dragAmount.y}")
                     onPositionChanged(Position(dragAmount.x, dragAmount.y))
                 }
             }

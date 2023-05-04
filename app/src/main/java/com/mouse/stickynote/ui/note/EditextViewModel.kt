@@ -1,6 +1,5 @@
 package com.mouse.stickynote.ui.note
 
-import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import com.mouse.stickynote.model.Note
 import kotlinx.coroutines.flow.MutableStateFlow
